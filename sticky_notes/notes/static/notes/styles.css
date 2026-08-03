@@ -1,0 +1,43 @@
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+header, footer {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+header nav a {
+  color: #ffd966;
+  margin: 0 8px;
+}
+
+main {
+  margin: 20px;
+}
+
+.note-board {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.note {
+  background-color: #fff9b1;
+  padding: 16px;
+  width: 220px;
+  min-height: 180px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  transform: rotate(-1deg);
+}
+
+.note h3 a {
+  color: #333;
+  text-decoration: none;
+}
