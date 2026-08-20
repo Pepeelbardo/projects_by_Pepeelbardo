@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Order Success — ArtisanHub{% endblock %}
+{% block content %}
+<h1>Order Success!</h1>
+<p>Order #{{ order.id }} — Total: ${{ order.total }}</p>
+<table>
+    <tr><th>Product</th><th>Quantity</th><th>Price</th><th>Review</th></tr>
+    {% for item in order.items.all %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.price_at_purchase }}</td>
+        <td>
+            <a class="btn btn-secondary" href="{% url 'eCommerce:product_detail' item.product.id %}#reviews">
+                Review this product
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<p class="muted">
+    We sent the invoice to your email (if you're using the console backend,
+    check the terminal where <code>runserver</code> is running).
+</p>
+<a class="btn" href="{% url 'eCommerce:products_list' %}">Continue Shopping</a>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Login — ArtisanHub{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 420px; margin: 0 auto;">
+    <h2>Login</h2>
+
+    <!-- This form sends login info to the backend using POST -->
+    <form method="POST" action="{% url 'grabsomore:login' %}">
+        {% csrf_token %}
+        <p>
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required>
+        </p>
+        <p>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required>
+        </p>
+        <button type="submit">Login</button>
+    </form>
+
+    {% if error %}
+        <p class="error-text">{{ error }}</p>
+    {% endif %}
+
+    <p><a href="{% url 'grabsomore:request_password_reset' %}">Forgot your password?</a></p>
+    <p class="muted">
+        Don't have an account? <a href="{% url 'grabsomore:register' %}">Register here</a>
+    </p>
+</div>
+{% endblock %}

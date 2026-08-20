@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{% if store %}Edit Store{% else %}Create Store{% endif %} — ArtisanHub{% endblock %}
+{% block content %}
+<h2>{% if store %}Edit Store{% else %}Create Store{% endif %}</h2>
+<form method="POST">
+    {% csrf_token %}
+    <p>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" value="{{ store.name|default:'' }}" required>
+    </p>
+    <p>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description">{{ store.description|default:'' }}</textarea>
+    </p>
+    <button type="submit">Save</button>
+</form>
+{% if error %}<p class="error-text">{{ error }}</p>{% endif %}
+<p><a href="{% url 'eCommerce:my_stores' %}">Back to My Stores</a></p>
+{% endblock %}

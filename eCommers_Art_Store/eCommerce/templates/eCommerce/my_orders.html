@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}My Orders — ArtisanHub{% endblock %}
+{% block content %}
+<h2>My Orders</h2>
+{% for order in orders %}
+<div class="card" style="margin-bottom: 1rem;">
+    <p><strong>Order #{{ order.id }}</strong> — {{ order.created_at }} — Total: ${{ order.total }}</p>
+    <ul>
+        {% for item in order.items.all %}
+        <li>{{ item.quantity }}x {{ item.product.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% empty %}
+<p>You haven't placed any orders yet.</p>
+{% endfor %}
+{% endblock %}

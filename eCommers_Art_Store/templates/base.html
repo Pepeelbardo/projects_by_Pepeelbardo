@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ArtisanHub{% endblock %}</title>
+    <style>
+        :root {
+            --color-primary: #2f6f4f;
+            --color-primary-dark: #234f38;
+            --color-accent: #c97b3d;
+            --color-accent-dark: #a55f28;
+            --color-bg: #faf8f5;
+            --color-surface: #ffffff;
+            --color-border: #e2ddd5;
+            --color-text: #2b2b2b;
+            --color-muted: #6b6b6b;
+            --color-danger: #b3392c;
+            --color-danger-dark: #8c2c22;
+            --radius: 6px;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+        header.site-header {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        header.site-header a.brand {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        nav.site-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            flex-wrap: wrap;
+        }
+        nav.site-nav a, nav.site-nav button.link-button {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        nav.site-nav a:hover, nav.site-nav button.link-button:hover {
+            text-decoration: underline;
+        }
+        nav.site-nav .greeting {
+            opacity: 0.85;
+            font-size: 0.9rem;
+        }
+        main.container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 3rem;
+        }
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+        h1, h2, h3 { color: var(--color-primary-dark); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--color-surface);
+        }
+        th, td {
+            border: 1px solid var(--color-border);
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+        }
+        th { background: #f1efe9; }
+        form { margin: 0.5rem 0; }
+        label { font-weight: 600; display: inline-block; margin-bottom: 0.25rem; }
+        input[type=text], input[type=email], input[type=password],
+        input[type=number], textarea, select {
+            padding: 0.45rem 0.6rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+        button, .btn {
+            display: inline-block;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            text-decoration: none;
+        }
+        button:hover, .btn:hover { background: var(--color-primary-dark); }
+        button.btn-danger, .btn-danger { background: var(--color-danger); }
+        button.btn-danger:hover, .btn-danger:hover { background: var(--color-danger-dark); }
+        button.btn-secondary, .btn-secondary { background: var(--color-accent); }
+        button.btn-secondary:hover, .btn-secondary:hover { background: var(--color-accent-dark); }
+        .error-list, .error-text { color: var(--color-danger); }
+        .muted { color: var(--color-muted); font-size: 0.9rem; }
+        .actions {
+            margin-top: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .actions form { margin: 0; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="{% if user.is_authenticated %}{% url 'grabsomore:welcome' %}{% else %}{% url 'grabsomore:home' %}{% endif %}">ArtisanHub</a>
+        <nav class="site-nav">
+            {% if not user.is_authenticated %}<a href="{% url 'grabsomore:home' %}">Home</a>{% endif %}
+            <a href="{% url 'eCommerce:products_list' %}">Catalog</a>
+            {% if user.is_authenticated %}
+                {% if is_vendor %}
+                    <a href="{% url 'eCommerce:my_stores' %}">My Stores</a>
+                    <a href="{% url 'eCommerce:product_page' %}">Search Product</a>
+                    <a href="{% url 'eCommerce:change_price' %}">Change Price</a>
+                {% else %}
+                    <a href="{% url 'eCommerce:main_cart_page' %}">Cart</a>
+                    <a href="{% url 'eCommerce:my_orders' %}">My Orders</a>
+                {% endif %}
+                <span class="greeting">Hi, {{ user.username }}</span>
+                <form method="POST" action="{% url 'grabsomore:logout' %}" style="display:inline; margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="link-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'grabsomore:login' %}">Login</a>
+                <a href="{% url 'grabsomore:register' %}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

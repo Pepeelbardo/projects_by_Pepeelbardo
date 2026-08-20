@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}My Stores — ArtisanHub{% endblock %}
+{% block content %}
+<h2>My Stores</h2>
+<p><a class="btn" href="{% url 'eCommerce:create_store' %}">+ Create New Store</a></p>
+
+{% if stores %}
+<table>
+    <thead>
+        <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for store in stores %}
+        <tr>
+            <td>{{ store.name }}</td>
+            <td>{{ store.description }}</td>
+            <td>
+                <a href="{% url 'eCommerce:edit_store' store.id %}">Edit</a>
+                <a href="{% url 'eCommerce:delete_store' store.id %}">Delete</a>
+                <a href="{% url 'eCommerce:store_products' store.id %}">View Products</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You don't have any stores yet.</p>
+{% endif %}
+{% endblock %}

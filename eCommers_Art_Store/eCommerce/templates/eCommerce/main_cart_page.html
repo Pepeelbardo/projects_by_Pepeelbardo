@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Your Cart — ArtisanHub{% endblock %}
+{% block content %}
+<h1>Your Shopping Cart</h1>
+
+{% if errors %}
+    <ul class="error-list">
+    {% for error in errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if cart %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.product.description }}</td>
+                    <td>${{ item.product.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.subtotal }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'eCommerce:remove_from_cart' item.product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>Total Items:</strong> {{ cart|length }}</p>
+    <p><strong>Total Price:</strong> ${{ total_price }}</p>
+
+    <div class="actions">
+        <form method="POST" action="{% url 'eCommerce:checkout' %}">
+            {% csrf_token %}
+            <button type="submit">Confirm Purchase</button>
+        </form>
+        <a class="btn btn-secondary" href="{% url 'eCommerce:products_list' %}">Continue Shopping</a>
+        <form method="POST" action="{% url 'eCommerce:clear_cart' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger">Clear Cart</button>
+        </form>
+    </div>
+{% else %}
+    <p>Your cart is empty.</p>
+    <a class="btn" href="{% url 'eCommerce:products_list' %}">Continue Shopping</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load eCommerce_extras %}
+{% block title %}{{ product.name }} — ArtisanHub{% endblock %}
+{% block content %}
+<h1>{{ product.name }}</h1>
+<p>Store: {{ product.store.name }}</p>
+<p>{{ product.description }}</p>
+<p><strong>Price:</strong> ${{ product.price }}</p>
+<p><strong>Available:</strong> {{ product.stock }}</p>
+
+{% if not is_vendor %}
+    {% if user.is_authenticated %}
+        {% if product.stock > 0 %}
+        <form method="POST" action="{% url 'eCommerce:add_to_cart' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <select name="quantity">
+                {% for n in product.stock|to_range %}
+                <option value="{{ n }}">{{ n }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Add to Cart</button>
+        </form>
+        {% else %}
+        <p class="muted">Out of stock.</p>
+        {% endif %}
+    {% else %}
+        <p><a href="{% url 'grabsomore:login' %}">Log in</a> to buy or leave a review.</p>
+    {% endif %}
+{% endif %}
+
+<hr>
+
+<h2 id="reviews">Reviews</h2>
+{% for review in reviews %}
+<div class="card" style="margin-bottom: 0.75rem;">
+    <p>
+        <strong>{{ review.user.username }}</strong> — {{ review.rating }}/5
+        {% if review.verified %}
+            <span style="color: #2f6f4f;">(Verified purchase)</span>
+        {% else %}
+            <span class="muted">(Not verified)</span>
+        {% endif %}
+    </p>
+    <p>{{ review.comment }}</p>
+    <p class="muted">{{ review.created_at }}</p>
+</div>
+{% empty %}
+<p>No reviews yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated and not is_vendor %}
+<h3>Leave a Review</h3>
+<form method="POST" action="{% url 'eCommerce:add_review' product.id %}">
+    {% csrf_token %}
+    <p>
+        <label for="rating">Rating (1-5):</label><br>
+        <input type="number" id="rating" name="rating" min="1" max="5" required>
+    </p>
+    <p>
+        <label for="comment">Comment:</label><br>
+        <textarea id="comment" name="comment"></textarea>
+    </p>
+    <button type="submit">Submit Review</button>
+</form>
+{% endif %}
+
+<p><a href="{% url 'eCommerce:products_list' %}">Back to Catalog</a></p>
+{% endblock %}

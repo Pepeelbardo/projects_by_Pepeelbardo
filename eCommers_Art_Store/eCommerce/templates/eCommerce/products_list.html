@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load eCommerce_extras %}
+{% block title %}Catalog — ArtisanHub{% endblock %}
+{% block content %}
+<h1>Product Catalog</h1>
+
+{% if products %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Store</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Reviews</th>
+                {% if not is_vendor %}<th>Add to Cart</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td><a href="{% url 'eCommerce:product_detail' product.id %}">{{ product.name }}</a></td>
+                    <td>{{ product.store.name }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>${{ product.price }}</td>
+                    <td>
+                        <a class="btn btn-secondary" href="{% url 'eCommerce:product_detail' product.id %}#reviews">Reviews</a>
+                    </td>
+                    {% if not is_vendor %}
+                    <td>
+                        {% if user.is_authenticated %}
+                            {% if product.stock > 0 %}
+                            <form method="POST" action="{% url 'eCommerce:add_to_cart' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <select name="quantity">
+                                    {% for n in product.stock|to_range %}
+                                    <option value="{{ n }}">{{ n }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit">Add</button>
+                            </form>
+                            {% else %}
+                            <span class="muted">Out of stock</span>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'grabsomore:login' %}">Log in to buy</a>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No products available.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}ArtisanHub — Handmade goods, straight from the maker{% endblock %}
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem 2rem;">
+    <h1 style="margin-top: 0;">Welcome to ArtisanHub</h1>
+    <p style="font-size: 1.1rem; max-width: 640px; margin: 0 auto 1.5rem;">
+        A marketplace built for independent artisans and small producers —
+        sculptures, ceramics, paintings, home decor, and more — to sell their
+        handmade goods directly to buyers who are looking for something
+        that isn't mass-produced.
+    </p>
+    <div class="actions" style="justify-content: center;">
+        {% if user.is_authenticated %}
+            <a class="btn" href="{% url 'grabsomore:welcome' %}">Go to your dashboard</a>
+        {% else %}
+            <a class="btn" href="{% url 'grabsomore:register' %}">Create an account</a>
+            <a class="btn btn-secondary" href="{% url 'grabsomore:login' %}">Login</a>
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'eCommerce:products_list' %}">Browse the catalog</a>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+    <h2>For buyers</h2>
+    <p>
+        Browse products from many independent stores in one place, add items
+        from different vendors to a single cart, check out, and track your
+        past orders. Every review is marked as verified when it comes from
+        someone who actually bought the product.
+    </p>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+    <h2>For vendors</h2>
+    <p>
+        Open your own store inside ArtisanHub in minutes. Add and manage
+        your products, set your prices and stock, and reach buyers without
+        having to build and maintain your own storefront.
+    </p>
+</div>
+{% endblock %}

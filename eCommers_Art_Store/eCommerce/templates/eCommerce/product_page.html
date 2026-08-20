@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Search Product — ArtisanHub{% endblock %}
+{% block content %}
+<h1>Search Product</h1>
+
+{% if error %}
+    <p class="error-text">{{ error }}</p>
+{% endif %}
+
+{% if product %}
+    <div class="card">
+        <h2>{{ product.name }}</h2>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Stock:</strong> {{ product.stock }}</p>
+    </div>
+{% else %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="product">Enter product name:</label>
+        <input type="text" id="product" name="product" required>
+        <button type="submit">View Product</button>
+    </form>
+{% endif %}
+{% endblock %}

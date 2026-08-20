@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Delete Product — ArtisanHub{% endblock %}
+{% block content %}
+<h2>Are you sure you want to delete the product "{{ product.name }}"?</h2>
+
+{% if error %}
+    <p class="error-text">{{ error }}</p>
+{% else %}
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger">Yes, delete</button>
+    </form>
+{% endif %}
+
+<p><a href="{% url 'eCommerce:store_products' product.store.id %}">Cancel</a></p>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Change Price — ArtisanHub{% endblock %}
+{% block content %}
+<h1>Change Product Price</h1>
+
+{% if error %}
+    <p class="error-text">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    <p>
+        <label for="product">Product name:</label><br>
+        <input type="text" id="product" name="product" required>
+    </p>
+    <p>
+        <label for="new_price">New price:</label><br>
+        <input type="text" id="new_price" name="new_price" required>
+    </p>
+    <button type="submit">Update Price</button>
+</form>
+{% endblock %}

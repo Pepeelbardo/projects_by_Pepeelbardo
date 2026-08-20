@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Welcome — ArtisanHub{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Welcome, {{ request.user.username }}!</h1>
+
+    {% if is_vendor %}
+        <p>You are logged in as a vendor. Manage your stores and products from your dashboard.</p>
+        <div class="actions">
+            <a class="btn" href="{% url 'eCommerce:my_stores' %}">Go to My Stores</a>
+        </div>
+    {% else %}
+        <p>You are logged in as a buyer. Browse the catalog and start shopping.</p>
+        <div class="actions">
+            <a class="btn" href="{% url 'eCommerce:products_list' %}">Go to Store</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

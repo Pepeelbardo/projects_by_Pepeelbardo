@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Reset Email Sent — ArtisanHub{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Reset Email Sent</h1>
+    <p>If an account with email {{ email }} exists, a password reset link has been sent. Please check your inbox.</p>
+    <a class="btn" href="{% url 'grabsomore:login' %}">Return to Login</a>
+</div>
+{% endblock %}

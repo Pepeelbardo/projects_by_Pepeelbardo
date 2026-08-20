@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Register — ArtisanHub{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 460px; margin: 0 auto;">
+    <h2>Register an Account</h2>
+
+    <!-- This form sends registration info to the backend -->
+    <form method="POST" action="{% url 'grabsomore:register' %}">
+        {% csrf_token %}
+        <p>
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required>
+        </p>
+        <p>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required>
+        </p>
+        <p>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required>
+        </p>
+        <p>
+            <label for="password_conf">Confirm password:</label><br>
+            <input type="password" id="password_conf" name="password_conf" required>
+        </p>
+        <p>
+            <label>Type of Account:</label><br>
+            <input type="radio" id="buyer" name="account_type" value="buyer" checked>
+            <label for="buyer">Buyer</label>
+            <input type="radio" id="vendor" name="account_type" value="vendor">
+            <label for="vendor">Vendor</label>
+        </p>
+        <button type="submit">Register</button>
+    </form>
+
+    {% if error %}
+        <p class="error-text">{{ error }}</p>
+    {% endif %}
+
+    <p class="muted">
+        Already have an account? <a href="{% url 'grabsomore:login' %}">Login here</a>
+    </p>
+</div>
+{% endblock %}
