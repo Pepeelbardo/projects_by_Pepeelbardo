@@ -1,0 +1,12 @@
+{% extends 'news/base.html' %}
+{% block title %}{% if object %}Edit Article{% else %}Create Article{% endif %}{% endblock %}
+{% block content %}
+<h1 style="color: #1c3d5a;">{% if object %}Edit Article{% else %}Create Article{% endif %}</h1>
+<form method="post" style="max-width: 500px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px;">
+        {% if object %}Save Changes{% else %}Submit for Review{% endif %}
+    </button>
+</form>
+{% endblock %}

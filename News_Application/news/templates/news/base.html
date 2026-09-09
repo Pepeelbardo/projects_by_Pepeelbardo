@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Oxford News{% endblock %}</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; margin: 0; color: #222222; background-color: #f7f7f7;">
+    <header
+        style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1c3d5a;">
+        <a href="{% url 'home' %}" style="color: #ffffff; font-weight: bold; font-size: 1.3rem; text-decoration: none;">Oxford News</a>
+<nav>
+    <a href="{% url 'newsletter-list' %}" style="color: #ffffff; margin-right: 1rem; text-decoration: none;">Newsletters</a>
+    <span style="color: #ffffff; margin-right: 1.5rem;">
+    Hi, {{ user.username }} ({{ user.get_role_display }})
+    </span>
+
+    {% if user.is_authenticated %}
+        <details style="display: inline-block; position: relative;">
+            <summary style="color: #ffffff; cursor: pointer;">Menu</summary>
+            <div style="position: absolute; right: 0; background-color: #ffffff; border: 1px solid #cccccc; border-radius: 4px; padding: 0.5rem; min-width: 170px;">
+                <a href="{% url 'following' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Following</a>
+                <a href="{% url 'discover' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Discover</a>
+                {% if user.role == 'JOURNALIST' %}
+                    <a href="{% url 'my-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">My Articles</a>
+                    <a href="{% url 'my-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">My Newsletters</a>
+                {% endif %}
+                {% if user.role == 'EDITOR' %}
+                    <a href="{% url 'pending-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Pending Articles</a>
+                    <a href="{% url 'manage-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Articles</a>
+                    <a href="{% url 'manage-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Newsletters</a>
+                {% endif %}
+                <a href="{% url 'account' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Account</a>
+                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: #1c3d5a; padding: 0.25rem 0; cursor: pointer; text-align: left; width: 100%;">Log out</button>
+                </form>
+            </div>
+        </details>
+    {% else %}
+        <a href="{% url 'login' %}" style="color: #ffffff; margin-right: 1rem; text-decoration: none;">Log in</a>
+        <a href="{% url 'signup' %}" style="background-color: #ffffff; color: #1c3d5a; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none;">Sign up</a>
+    {% endif %}
+</nav>
+    </header>
+    <main style="padding: 2rem;">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

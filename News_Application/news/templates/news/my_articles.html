@@ -1,0 +1,27 @@
+{% extends 'news/base.html' %}
+{% block title %}My Articles{% endblock %}
+{% block content %}
+<h1 style="color: #1c3d5a;">My Articles</h1>
+<a href="{% url 'article-create' %}" style="display:inline-block; margin-bottom: 1rem; background-color: #1c3d5a; color: #ffffff; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">+ New Article</a>
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    {% for article in articles %}
+        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
+            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
+                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
+            </h3>
+            <p style="margin: 0 0 0.25rem 0; font-size: 0.85rem; color: #666666;">By {{ article.author.username }}</p>
+            <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #666666;">
+                {% if article.publisher %}{{ article.publisher.name }}{% else %}No publisher{% endif %}
+            </p>
+            {% if article.approved %}
+                <span style="background-color: #2e7d32; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Approved</span>
+            {% else %}
+                <span style="background-color: #999999; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Pending</span>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>You haven't written any articles yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

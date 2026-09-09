@@ -1,0 +1,30 @@
+{% extends 'news/base.html' %}
+{% block title %}{{ newsletter.title }}{% endblock %}
+{% block content %}
+<article style="max-width: 700px; margin: 0 auto;">
+    <h1 style="color: #1c3d5a; margin-bottom: 0.25rem;">{{ newsletter.title }}</h1>
+    <p style="color: #666666; margin-top: 0;">By {{ newsletter.author.username }} · {{ newsletter.created_at|date:"F j, Y" }}</p>
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'toggle-follow' newsletter.author.id %}" style="display:inline;">
+            {% csrf_token %}
+            {% if is_following_author %}
+                <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.4rem 0.8rem; border-radius: 4px;">Unfollow {{ newsletter.author.username }}</button>
+            {% else %}
+                <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.4rem 0.8rem; border-radius: 4px;">Follow {{ newsletter.author.username }}</button>
+            {% endif %}
+        </form>
+    {% endif %}
+
+    <p style="line-height: 1.6; margin-top: 1.5rem;">{{ newsletter.description }}</p>
+
+    <h3 style="color: #1c3d5a; margin-top: 2rem;">Articles in this newsletter</h3>
+    <ul>
+        {% for article in newsletter.articles.all %}
+            <li><a href="{% url 'article-page' article.id %}" style="color: #1c3d5a;">{{ article.title }}</a></li>
+        {% empty %}
+            <li>No articles included yet.</li>
+        {% endfor %}
+    </ul>
+</article>
+{% endblock %}

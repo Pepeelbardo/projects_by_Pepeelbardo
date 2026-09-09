@@ -1,0 +1,37 @@
+{% extends 'news/base.html' %}
+{% block title %}Oxford News — Home{% endblock %}
+{% block content %}
+
+<form method="get" action="{% url 'home' %}" style="margin-bottom: 1.5rem;">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search articles..." style="padding: 0.5rem; border: 1px solid #cccccc; border-radius: 4px; width: 240px;">
+    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.5rem 1rem; border-radius: 4px;">Search</button>
+</form>
+
+{% if featured_article %}
+<section style="background-color: #1c3d5a; color: #ffffff; padding: 2rem; margin-bottom: 2rem; border-radius: 8px;">
+    <p style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #9fc1e0; margin: 0 0 0.5rem 0;">Featured</p>
+    <h1 style="margin: 0 0 0.5rem 0; font-size: 2rem;">
+        <a href="{% url 'article-page' featured_article.id %}" style="color: #ffffff; text-decoration: none;">{{ featured_article.title }}</a>
+    </h1>
+    <p style="margin: 0 0 1rem 0; color: #d6e4f0;">By {{ featured_article.author.username }} · {{featured_article.created_at|date:"F j, Y" }}</p>
+    <p style="margin: 0;">{{ featured_article.content|truncatewords:40 }}</p>
+</section>
+{% endif %}
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    {% for article in other_articles %}
+    <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
+        <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
+            <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
+        </h3>
+        <p style="margin: 0; font-size: 0.85rem; color: #666666;">By {{ article.author.username }}</p>
+    </div>
+    {% empty %}
+        {% if search_query %}
+            <p>No articles match "{{ search_query }}".</p>
+        {% else %}
+            <p>No more articles yet.</p>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

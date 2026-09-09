@@ -1,0 +1,11 @@
+{% extends 'news/base.html' %}
+{% block title %}Delete Newsletter{% endblock %}
+{% block content %}
+<h1 style="color: #1c3d5a;">Delete "{{ object.title }}"?</h1>
+<p>This action cannot be undone.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background-color: #b00020; color: #ffffff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px;">Delete</button>
+    <a href="{% url 'newsletter-list' %}" style="margin-left: 1rem;">Cancel</a>
+</form>
+{% endblock %}

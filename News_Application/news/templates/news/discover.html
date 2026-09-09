@@ -1,0 +1,49 @@
+{% extends 'news/base.html' %}
+{% block title %}Discover{% endblock %}
+{% block content %}
+
+<form method="get" action="{% url 'discover' %}" style="margin-bottom: 1.5rem;">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search articles..." style="padding: 0.5rem; border: 1px solid #cccccc; border-radius: 4px; width: 240px;">
+    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.5rem 1rem; border-radius: 4px;">Search</button>
+</form>
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    {% for article in articles %}
+        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
+            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
+                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
+            </h3>
+            <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #666666;">
+                By {{ article.author.username }}
+                {% if article.publisher %}· {{ article.publisher.name }}{% endif %}
+            </p>
+
+            <form method="post" action="{% url 'toggle-follow' article.author.id %}" style="margin: 0 0 0.25rem 0;">
+                {% csrf_token %}
+                {% if article.author.id in following_ids %}
+                    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Unfollow {{ article.author.username }}</button>
+                {% else %}
+                    <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Follow {{ article.author.username }}</button>
+                {% endif %}
+            </form>
+
+            {% if article.publisher %}
+                <form method="post" action="{% url 'toggle-follow-publisher' article.publisher.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    {% if article.publisher.id in following_publisher_ids %}
+                        <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Unfollow {{ article.publisher.name }}</button>
+                    {% else %}
+                        <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Follow {{ article.publisher.name }}</button>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    {% empty %}
+        {% if search_query %}
+            <p>No articles match "{{ search_query }}".</p>
+        {% else %}
+            <p>No articles published yet.</p>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

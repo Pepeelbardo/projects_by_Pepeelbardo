@@ -1,0 +1,33 @@
+{% extends 'news/base.html' %}
+\{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<article style="max-width: 700px; margin: 0 auto;">
+    <h1 style="color: #1c3d5a; margin-bottom: 0.25rem;">{{ article.title }}</h1>
+    <p style="color: #666666; margin-top: 0;">
+        By {{ article.author.username }}
+        {% if article.publisher %} · Published by {{ article.publisher.name }}{% endif %}· {{ article.created_at|date:"F j, Y" }}
+    </p>
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'toggle-follow' article.author.id %}" style="display:inline;">
+            {% csrf_token %}
+            {% if is_following_author %}
+                <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.4rem 0.8rem; border-radius: 4px;">Unfollow {{ article.author.username }}</button>
+            {% else %}
+                <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.4rem 0.8rem; border-radius: 4px;">Follow {{ article.author.username }}</button>
+            {% endif %}
+        </form>
+
+        {% if article.publisher %}
+            <form method="post" action="{% url 'toggle-follow-publisher' article.publisher.id %}" style="display:inline;">{% csrf_token %}{% if is_following_publisher %}
+                    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.4rem 0.8rem; border-radius: 4px;">Unfollow {{ article.publisher.name }}</button>
+                {% else %}
+                    <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.4rem 0.8rem; border-radius: 4px;">Follow {{ article.publisher.name }}</button>
+                {% endif %}
+            </form>
+        {% endif %}
+    {% endif %}
+
+    <p style="line-height: 1.6; margin-top: 1.5rem; white-space: pre-line;">{{ article.content }}</p>
+</article>
+{% endblock %}

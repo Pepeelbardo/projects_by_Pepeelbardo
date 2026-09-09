@@ -1,0 +1,29 @@
+{% extends 'news/base.html' %}
+{% block title %}Manage Articles{% endblock %}
+{% block content %}
+<h1 style="color: #1c3d5a;">Manage Articles</h1>
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    {% for article in articles %}
+        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
+            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
+                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
+            </h3>
+            <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #666666;">By {{ article.author.username }}</p>
+
+            {% if article.approved %}
+                <span style="background-color: #2e7d32; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Approved</span>
+            {% else %}
+                <span style="background-color: #999999; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Pending</span>
+            {% endif %}
+
+            <div style="margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <a href="{% url 'article-edit' article.id %}" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Edit</a>
+                <a href="{% url 'article-delete' article.id %}" style="background-color: #ffffff; color: #b00020; border: 1px solid #b00020; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Delete</a>
+            </div>
+        </div>
+    {% empty %}
+        <p>No articles yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

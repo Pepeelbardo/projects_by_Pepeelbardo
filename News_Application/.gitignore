@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+Newsenv/
+
+# Environment variables (secrets)
+.env
+
+# Database
+db.sqlite3
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+
+# drawio backup files
+*.bkp
