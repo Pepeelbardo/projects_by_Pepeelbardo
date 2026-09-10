@@ -95,4 +95,22 @@ urlpatterns = [
         ),
         name="password-change-done",
     ),
+    path(
+        "editor/publishers/", views.PublisherListView.as_view(), name="publisher-list"
+    ),
+    path(
+        "editor/publishers/create/",
+        views.PublisherCreateView.as_view(),
+        name="publisher-create",
+    ),
+    path(
+        "editor/publishers/<int:pk>/edit/",
+        views.PublisherUpdateView.as_view(),
+        name="publisher-edit",
+    ),
+    path(
+        "editor/publishers/<int:pk>/delete/",
+        views.PublisherDeleteView.as_view(),
+        name="publisher-delete",
+    ),
 ] + router.urls

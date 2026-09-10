@@ -1,0 +1,11 @@
+{% extends 'news/base.html' %}
+{% block title %}Delete Publisher{% endblock %}
+{% block content %}
+<h1 style="color: #1c3d5a;">Delete "{{ object.name }}"?</h1>
+<p>This action cannot be undone. Articles from this publisher will become independent (their publisher field is cleared, not deleted).</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background-color: #b00020; color: #ffffff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px;">Delete</button>
+    <a href="{% url 'publisher-list' %}" style="margin-left: 1rem;">Cancel</a>
+</form>
+{% endblock %}

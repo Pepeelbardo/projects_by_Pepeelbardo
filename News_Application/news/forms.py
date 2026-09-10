@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Article, Newsletter, User
+from .models import Article, Newsletter, Publisher, User
 
 
 class SignUpForm(UserCreationForm):
@@ -12,6 +12,8 @@ class SignUpForm(UserCreationForm):
     ALLOWED_SIGNUP_ROLES = [
         (User.Role.READER, "Reader"),
         (User.Role.JOURNALIST, "Journalist"),
+        (User.Role.EDITOR, 'Editor'),
+
     ]
     role = forms.ChoiceField(choices=ALLOWED_SIGNUP_ROLES, initial=User.Role.READER)
 
@@ -61,3 +63,20 @@ class EmailUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["email"]
+
+
+class PublisherForm(forms.ModelForm):
+    """Lets an editor create or update a Publisher and assign its staff."""
+
+    class Meta:
+        model = Publisher
+        fields = ['name', 'editors', 'journalists']
+        widgets = {
+            'editors': forms.CheckboxSelectMultiple,
+            'journalists': forms.CheckboxSelectMultiple,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['editors'].queryset = User.objects.filter(role=User.Role.EDITOR)
+        self.fields['journalists'].queryset = User.objects.filter(role=User.Role.JOURNALIST)

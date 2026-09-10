@@ -14,7 +14,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .forms import ArticleForm, EmailUpdateForm, NewsletterForm, SignUpForm
+from .forms import ArticleForm, EmailUpdateForm, NewsletterForm, SignUpForm, PublisherForm
 from .models import Article, Newsletter, Publisher, User
 
 
@@ -241,7 +241,7 @@ class NewsletterCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("home")
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(name__in=["Journalist", "Editor"]).exists():
+        if not request.user.groups.filter(name__in=["Journalist"]).exists():
             return redirect("home")
         return super().dispatch(request, *args, **kwargs)
 
@@ -347,3 +347,37 @@ class ManageNewslettersView(LoginRequiredMixin, EditorRequiredMixin, ListView):
     model = Newsletter
     template_name = "news/manage_newsletters.html"
     context_object_name = "newsletters"
+
+
+class PublisherListView(LoginRequiredMixin, EditorRequiredMixin, ListView):
+    """List all publishers for editors to manage."""
+
+    model = Publisher
+    template_name = 'news/publisher_list.html'
+    context_object_name = 'publishers'
+
+
+class PublisherCreateView(LoginRequiredMixin, EditorRequiredMixin, CreateView):
+    """Let an editor create a new publisher."""
+
+    model = Publisher
+    form_class = PublisherForm
+    template_name = 'news/publisher_form.html'
+    success_url = reverse_lazy('publisher-list')
+
+
+class PublisherUpdateView(LoginRequiredMixin, EditorRequiredMixin, UpdateView):
+    """Let an editor edit a publisher's name and staff."""
+
+    model = Publisher
+    form_class = PublisherForm
+    template_name = 'news/publisher_form.html'
+    success_url = reverse_lazy('publisher-list')
+
+
+class PublisherDeleteView(LoginRequiredMixin, EditorRequiredMixin, DeleteView):
+    """Let an editor delete a publisher."""
+
+    model = Publisher
+    template_name = 'news/publisher_confirm_delete.html'
+    success_url = reverse_lazy('publisher-list')

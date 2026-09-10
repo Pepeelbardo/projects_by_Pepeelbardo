@@ -27,6 +27,7 @@
                     <a href="{% url 'my-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">My Newsletters</a>
                 {% endif %}
                 {% if user.role == 'EDITOR' %}
+                    <a href="{% url 'publisher-list' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Publishers</a>
                     <a href="{% url 'pending-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Pending Articles</a>
                     <a href="{% url 'manage-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Articles</a>
                     <a href="{% url 'manage-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Newsletters</a>

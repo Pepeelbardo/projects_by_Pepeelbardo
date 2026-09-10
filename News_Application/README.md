@@ -166,14 +166,16 @@ account.
 ## Usage
 
 - Visit `/` for the public homepage (search + featured article).
-- Sign up as a Reader or Journalist at `/accounts/signup/`.
+- Sign up as a Reader, Journalist, or Editor at `/accounts/signup/`.
 - As a Reader: browse `/discover/` to search articles and follow authors or
   publishers, and check `/following/` for content from who you already follow.
 - As a Journalist: create articles and newsletters from the account menu
   (`My Articles`, `My Newsletters`), which stay pending until an Editor
   approves them.
-- As an Editor: review submissions at `/editor/pending/`, and manage all
-  articles/newsletters from `/editor/manage/` and `/editor/newsletters/`.
+- As an Editor: review submissions at `/editor/pending/`, manage all
+  articles/newsletters from `/editor/manage/` and `/editor/newsletters/`, and
+  create/manage Publishers (including which Editors and Journalists belong to
+  each one) at `/editor/publishers/`.
 - Everyone: manage your own email and password from `/account/`.
 
 ## API Endpoints
@@ -193,11 +195,19 @@ Newsletters are only available through the website, not the REST API.
 
 ## Roles & Permissions
 
-| Role       | Articles                                   | Newsletters                       |
-|------------|---------------------------------------------|-------------------------------------|
-| Reader     | View only; follow journalists/publishers    | View only                           |
-| Editor     | View, update, delete, approve (any)         | View, update, delete (any)          |
-| Journalist | Create, view, update, delete (own content)  | Create, view, update, delete (own)  |
+| Role       | Articles                                   | Newsletters                        | Publishers               |
+|------------|---------------------------------------------|--------------------------------------|---------------------------|
+| Reader     | View only; follow journalists/publishers    | View only                            | View only (via follow)   |
+| Editor     | View, update, delete, approve (any)         | View, update, delete (any)           | Create, update, delete   |
+| Journalist | Create, view, update, delete (own content)  | Create (own), view, update, delete (own) | None (assigned by Editor) |
+
+## Publishers
+
+Publishers are not self-service — there is no public registration form for
+them, unlike Reader/Journalist/Editor accounts. An Editor creates a Publisher
+from `/editor/publishers/` and assigns which existing Editors and Journalists
+belong to it. A Journalist can only select a Publisher on their articles once
+an Editor has added them to that Publisher's journalist list.
 
 ## Project structure
 News_Application/
