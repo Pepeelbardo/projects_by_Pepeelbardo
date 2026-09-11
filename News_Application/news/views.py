@@ -14,7 +14,13 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .forms import ArticleForm, EmailUpdateForm, NewsletterForm, SignUpForm, PublisherForm
+from .forms import (
+    ArticleForm,
+    EmailUpdateForm,
+    NewsletterForm,
+    SignUpForm,
+    PublisherForm,
+)
 from .models import Article, Newsletter, Publisher, User
 
 
@@ -232,6 +238,38 @@ class MyArticlesView(LoginRequiredMixin, JournalistRequiredMixin, ListView):
         return self.request.user.articles.all()
 
 
+class JournalistArticleUpdateView(
+    LoginRequiredMixin, JournalistRequiredMixin, UpdateView
+):
+    """Let a journalist edit one of their own articles."""
+
+    model = Article
+    form_class = ArticleForm
+    template_name = "news/article_form.html"
+    success_url = reverse_lazy("my-articles")
+
+    def get_queryset(self):
+        return self.request.user.articles.all()
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+
+class JournalistArticleDeleteView(
+    LoginRequiredMixin, JournalistRequiredMixin, DeleteView
+):
+    """Let a journalist delete one of their own articles."""
+
+    model = Article
+    template_name = "news/article_confirm_delete.html"
+    success_url = reverse_lazy("my-articles")
+
+    def get_queryset(self):
+        return self.request.user.articles.all()
+
+
 class NewsletterCreateView(LoginRequiredMixin, CreateView):
     """Let a journalist or editor create a newsletter from approved articles."""
 
@@ -353,8 +391,8 @@ class PublisherListView(LoginRequiredMixin, EditorRequiredMixin, ListView):
     """List all publishers for editors to manage."""
 
     model = Publisher
-    template_name = 'news/publisher_list.html'
-    context_object_name = 'publishers'
+    template_name = "news/publisher_list.html"
+    context_object_name = "publishers"
 
 
 class PublisherCreateView(LoginRequiredMixin, EditorRequiredMixin, CreateView):
@@ -362,8 +400,8 @@ class PublisherCreateView(LoginRequiredMixin, EditorRequiredMixin, CreateView):
 
     model = Publisher
     form_class = PublisherForm
-    template_name = 'news/publisher_form.html'
-    success_url = reverse_lazy('publisher-list')
+    template_name = "news/publisher_form.html"
+    success_url = reverse_lazy("publisher-list")
 
 
 class PublisherUpdateView(LoginRequiredMixin, EditorRequiredMixin, UpdateView):
@@ -371,13 +409,13 @@ class PublisherUpdateView(LoginRequiredMixin, EditorRequiredMixin, UpdateView):
 
     model = Publisher
     form_class = PublisherForm
-    template_name = 'news/publisher_form.html'
-    success_url = reverse_lazy('publisher-list')
+    template_name = "news/publisher_form.html"
+    success_url = reverse_lazy("publisher-list")
 
 
 class PublisherDeleteView(LoginRequiredMixin, EditorRequiredMixin, DeleteView):
     """Let an editor delete a publisher."""
 
     model = Publisher
-    template_name = 'news/publisher_confirm_delete.html'
-    success_url = reverse_lazy('publisher-list')
+    template_name = "news/publisher_confirm_delete.html"
+    success_url = reverse_lazy("publisher-list")

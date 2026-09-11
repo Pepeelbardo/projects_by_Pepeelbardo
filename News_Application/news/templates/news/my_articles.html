@@ -18,7 +18,11 @@
                 <span style="background-color: #2e7d32; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Approved</span>
             {% else %}
                 <span style="background-color: #999999; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Pending</span>
-            {% endif %}
+                {% endif %}
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                    <a href="{% url 'my-article-edit' article.id %}" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Edit</a>
+                    <a href="{% url 'my-article-delete' article.id %}" style="background-color: #ffffff; color: #b00020; border: 1px solid #b00020; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Delete</a>
+                </div>
         </div>
     {% empty %}
         <p>You haven't written any articles yet.</p>

@@ -1,14 +1,9 @@
 """URL routes for the news app."""
 
 from django.contrib.auth import views as auth_views
-from django.urls import path, reverse_lazy
-from rest_framework.routers import DefaultRouter
+from django.urls import include, path, reverse_lazy
 
 from . import views
-from .api_views import ApprovedArticleLogView, ArticleViewSet
-
-router = DefaultRouter()
-router.register("api/articles", ArticleViewSet, basename="article")
 
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
@@ -29,7 +24,6 @@ urlpatterns = [
         name="pending-articles",
     ),
     path("editor/approve/<int:pk>/", views.approve_article, name="approve-article"),
-    path("api/approved/", ApprovedArticleLogView.as_view(), name="api-approved"),
     path("following/", views.FollowingView.as_view(), name="following"),
     path("discover/", views.DiscoverView.as_view(), name="discover"),
     path("account/", views.AccountView.as_view(), name="account"),
@@ -42,6 +36,16 @@ urlpatterns = [
     path("articles/<int:pk>/", views.ArticleDetailView.as_view(), name="article-page"),
     path("articles/create/", views.ArticleCreateView.as_view(), name="article-create"),
     path("articles/mine/", views.MyArticlesView.as_view(), name="my-articles"),
+    path(
+        "articles/<int:pk>/edit/",
+        views.JournalistArticleUpdateView.as_view(),
+        name="my-article-edit",
+    ),
+    path(
+        "articles/<int:pk>/delete/",
+        views.JournalistArticleDeleteView.as_view(),
+        name="my-article-delete",
+    ),
     path(
         "newsletters/create/",
         views.NewsletterCreateView.as_view(),
@@ -113,4 +117,5 @@ urlpatterns = [
         views.PublisherDeleteView.as_view(),
         name="publisher-delete",
     ),
-] + router.urls
+    path("api/", include("news.api_urls")),
+]

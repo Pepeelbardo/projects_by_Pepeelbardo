@@ -169,9 +169,9 @@ account.
 - Sign up as a Reader, Journalist, or Editor at `/accounts/signup/`.
 - As a Reader: browse `/discover/` to search articles and follow authors or
   publishers, and check `/following/` for content from who you already follow.
-- As a Journalist: create articles and newsletters from the account menu
-  (`My Articles`, `My Newsletters`), which stay pending until an Editor
-  approves them.
+- As a Journalist: create, edit, and delete your own articles and newsletters
+  from the account menu (`My Articles`, `My Newsletters`); new articles stay
+  pending until an Editor approves them.
 - As an Editor: review submissions at `/editor/pending/`, manage all
   articles/newsletters from `/editor/manage/` and `/editor/newsletters/`, and
   create/manage Publishers (including which Editors and Journalists belong to
@@ -210,29 +210,33 @@ belong to it. A Journalist can only select a Publisher on their articles once
 an Editor has added them to that Publisher's journalist list.
 
 ## Project structure
+
+```
 News_Application/
 ├── oxday/
-│ ├── settings.py # Project settings (reads DB/email config from .env)
-│ ├── urls.py
-│ └── wsgi.py
+│   ├── settings.py          # Project settings (reads DB/email config from .env)
+│   ├── urls.py
+│   └── wsgi.py
 ├── news/
-│ ├── models.py # User, Publisher, Article, Newsletter
-│ ├── views.py # Server-rendered pages (Home, Discover, dashboards...)
-│ ├── api_views.py # REST API viewsets
-│ ├── serializers.py
-│ ├── permissions.py # ArticlePermission (role-based)
-│ ├── forms.py
-│ ├── signals.py # Group sync + approval notifications
-│ ├── management/commands/
-│ │ └── seed_articles.py # Sample data for manual testing
-│ ├── migrations/
-│ ├── templates/news/ # All HTML templates (inline styles, no CSS files)
-│ ├── tests.py
-│ └── urls.py
+│   ├── models.py             # User, Publisher, Article, Newsletter
+│   ├── views.py               # Server-rendered pages (Home, Discover, dashboards...)
+│   ├── api_views.py           # REST API viewsets
+│   ├── serializers.py
+│   ├── permissions.py         # ArticlePermission (role-based)
+│   ├── forms.py
+│   ├── signals.py             # Group sync + approval notifications
+│   ├── management/commands/
+│   │   └── seed_articles.py   # Sample data for manual testing
+│   ├── migrations/
+│   ├── templates/news/        # All HTML templates (inline styles, no CSS files)
+│   ├── tests.py
+│   ├── urls.py                # Server-rendered page routes
+│   └── api_urls.py            # DRF router + API-only routes
 ├── manage.py
 ├── requirements.txt
 ├── .env.example
 └── README.md
+```
 
 ## Running Tests
 

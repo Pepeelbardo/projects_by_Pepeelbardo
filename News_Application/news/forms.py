@@ -6,13 +6,12 @@ from .models import Article, Newsletter, Publisher, User
 
 
 class SignUpForm(UserCreationForm):
-    """Public registration form. Users may sign up as a Reader or a Journalist."""
-
+    """Public registration form. Users may sign up as a Reader, Journalist, or Editor."""
     email = forms.EmailField(required=True)
     ALLOWED_SIGNUP_ROLES = [
         (User.Role.READER, "Reader"),
         (User.Role.JOURNALIST, "Journalist"),
-        (User.Role.EDITOR, 'Editor'),
+        (User.Role.EDITOR, "Editor"),
 
     ]
     role = forms.ChoiceField(choices=ALLOWED_SIGNUP_ROLES, initial=User.Role.READER)
@@ -70,13 +69,13 @@ class PublisherForm(forms.ModelForm):
 
     class Meta:
         model = Publisher
-        fields = ['name', 'editors', 'journalists']
+        fields = ["name", "editors", "journalists"]
         widgets = {
-            'editors': forms.CheckboxSelectMultiple,
-            'journalists': forms.CheckboxSelectMultiple,
+            "editors": forms.CheckboxSelectMultiple,
+            "journalists": forms.CheckboxSelectMultiple,
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['editors'].queryset = User.objects.filter(role=User.Role.EDITOR)
-        self.fields['journalists'].queryset = User.objects.filter(role=User.Role.JOURNALIST)
+        self.fields["editors"].queryset = User.objects.filter(role=User.Role.EDITOR)
+        self.fields["journalists"].queryset = User.objects.filter(role=User.Role.JOURNALIST)
