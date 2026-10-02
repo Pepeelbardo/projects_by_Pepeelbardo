@@ -2,41 +2,45 @@
 {% block title %}Discover{% endblock %}
 {% block content %}
 
-<form method="get" action="{% url 'discover' %}" style="margin-bottom: 1.5rem;">
-    <input type="text" name="q" value="{{ search_query }}" placeholder="Search articles..." style="padding: 0.5rem; border: 1px solid #cccccc; border-radius: 4px; width: 240px;">
-    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.5rem 1rem; border-radius: 4px;">Search</button>
+<form method="get" action="{% url 'discover' %}" class="d-flex mb-4" style="max-width: 400px;">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search articles..." class="form-control me-2">
+    <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for article in articles %}
-        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
-            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
-                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
-            </h3>
-            <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #666666;">
-                By {{ article.author.username }}
-                {% if article.publisher %}· {{ article.publisher.name }}{% endif %}
-            </p>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="h6 card-title">
+                        <a href="{% url 'article-page' article.id %}" class="text-decoration-none" style="color: #1c3d5a;">{{ article.title }}</a>
+                    </h3>
+                    <p class="card-text small text-muted">
+                        By {{ article.author.username }}
+                        {% if article.publisher %}· {{ article.publisher.name }}{% endif %}
+                    </p>
 
-            <form method="post" action="{% url 'toggle-follow' article.author.id %}" style="margin: 0 0 0.25rem 0;">
-                {% csrf_token %}
-                {% if article.author.id in following_ids %}
-                    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Unfollow {{ article.author.username }}</button>
-                {% else %}
-                    <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Follow {{ article.author.username }}</button>
-                {% endif %}
-            </form>
+                    <form method="post" action="{% url 'toggle-follow' article.author.id %}" class="mb-1 mt-auto">
+                        {% csrf_token %}
+                        {% if article.author.id in following_ids %}
+                            <button type="submit" class="btn btn-sm btn-primary">Unfollow {{ article.author.username }}</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Follow {{ article.author.username }}</button>
+                        {% endif %}
+                    </form>
 
-            {% if article.publisher %}
-                <form method="post" action="{% url 'toggle-follow-publisher' article.publisher.id %}" style="margin: 0;">
-                    {% csrf_token %}
-                    {% if article.publisher.id in following_publisher_ids %}
-                        <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Unfollow {{ article.publisher.name }}</button>
-                    {% else %}
-                        <button type="submit" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">Follow {{ article.publisher.name }}</button>
+                    {% if article.publisher %}
+                        <form method="post" action="{% url 'toggle-follow-publisher' article.publisher.id %}">
+                            {% csrf_token %}
+                            {% if article.publisher.id in following_publisher_ids %}
+                                <button type="submit" class="btn btn-sm btn-primary">Unfollow {{ article.publisher.name }}</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Follow {{ article.publisher.name }}</button>
+                            {% endif %}
+                        </form>
                     {% endif %}
-                </form>
-            {% endif %}
+                </div>
+            </div>
         </div>
     {% empty %}
         {% if search_query %}

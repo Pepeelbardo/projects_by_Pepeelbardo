@@ -1,9 +1,16 @@
 {% extends 'news/base.html' %}
 {% block title %}Sign up{% endblock %}
 {% block content %}
-<form method="post" class="auth-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Sign up</button>
-</form>
+<div class="col-md-5 mx-auto">
+  <div class="card">
+    <div class="card-body">
+      <h1 class="h4 mb-3" style="color: #1c3d5a;">Sign up</h1>
+      <form method="post" class="content-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary">Sign up</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

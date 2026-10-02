@@ -1,16 +1,20 @@
 {% extends 'news/base.html' %}
 {% block title %}Following{% endblock %}
 {% block content %}
-<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for article in articles %}
-        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
-            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
-                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
-            </h3>
-            <p style="margin: 0; font-size: 0.85rem; color: #666666;">
-                By {{ article.author.username }}
-                {% if article.publisher %}· {{ article.publisher.name }}{% endif %}
-            </p>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h6 card-title">
+                        <a href="{% url 'article-page' article.id %}" class="text-decoration-none" style="color: #1c3d5a;">{{ article.title }}</a>
+                    </h3>
+                    <p class="card-text small text-muted">
+                        By {{ article.author.username }}
+                        {% if article.publisher %}· {{ article.publisher.name }}{% endif %}
+                    </p>
+                </div>
+            </div>
         </div>
     {% empty %}
         <p>You're not following anyone yet, or they haven't published anything approved. Visit Discover to follow journalists.</p>

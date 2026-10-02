@@ -1,14 +1,18 @@
 {% extends 'news/base.html' %}
 {% block title %}Newsletters{% endblock %}
 {% block content %}
-<h1 style="color: #1c3d5a;">Newsletters</h1>
-<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+<h1 class="h4 mb-3" style="color: #1c3d5a;">Newsletters</h1>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for newsletter in newsletters %}
-        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
-            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
-                <a href="{% url 'newsletter-page' newsletter.id %}" style="color: #1c3d5a; text-decoration: none;">{{ newsletter.title }}</a>
-            </h3>
-            <p style="margin: 0; font-size: 0.85rem; color: #666666;">By {{ newsletter.author.username }}</p>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h6 card-title">
+                        <a href="{% url 'newsletter-page' newsletter.id %}" class="text-decoration-none" style="color: #1c3d5a;">{{ newsletter.title }}</a>
+                    </h3>
+                    <p class="card-text small text-muted mb-0">By {{ newsletter.author.username }}</p>
+                </div>
+            </div>
         </div>
     {% empty %}
         <p>No newsletters yet.</p>

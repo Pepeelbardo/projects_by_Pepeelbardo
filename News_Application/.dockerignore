@@ -1,0 +1,10 @@
+Newsenv/
+__pycache__/
+*.pyc
+.git/
+.env
+db.sqlite3
+docs/_build/
+News_Application.zip
+.DS_Store
+*.bkp

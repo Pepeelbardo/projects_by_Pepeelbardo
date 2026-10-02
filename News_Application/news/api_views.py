@@ -31,6 +31,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return Article.objects.filter(approved=True)
 
     def perform_create(self, serializer):
+        """Attach the logged-in journalist as the article's author on create."""
         serializer.save(author=self.request.user)
 
     @action(detail=False, methods=["get"])
@@ -57,6 +58,7 @@ class ApprovedArticleLogView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """Log an approved article's id and title (stand-in for a real external log)."""
         print(f"[approved] article_id={request.data.get('article_id')} title={
             request.data.get('title')
             }")

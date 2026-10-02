@@ -19,3 +19,4 @@ db.sqlite3
 
 # drawio backup files
 *.bkp
+docs/_build/

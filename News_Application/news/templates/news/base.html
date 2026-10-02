@@ -1,53 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Oxford News{% endblock %}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Oxford News{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bs-primary: #1c3d5a;
+    --bs-primary-rgb: 28, 61, 90;
+    --bs-link-color: #1c3d5a;
+    --bs-link-hover-color: #14293d;
+  }
+  body { background-color: #f7f7f7; }
+  .btn-primary {
+    --bs-btn-bg: #1c3d5a;
+    --bs-btn-border-color: #1c3d5a;
+    --bs-btn-hover-bg: #14293d;
+    --bs-btn-hover-border-color: #14293d;
+    --bs-btn-active-bg: #102030;
+    --bs-btn-active-border-color: #102030;
+  }
+  .btn-outline-primary {
+    --bs-btn-color: #1c3d5a;
+    --bs-btn-border-color: #1c3d5a;
+    --bs-btn-hover-bg: #1c3d5a;
+    --bs-btn-hover-border-color: #1c3d5a;
+    --bs-btn-active-bg: #14293d;
+    --bs-btn-active-border-color: #14293d;
+  }
+  .navbar-brand { font-weight: 700; }
+  .card { border: none; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .content-form input:not([type=checkbox]):not([type=radio]),
+  .content-form select,
+  .content-form textarea {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    margin-bottom: .9rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+  }
+  .content-form input:focus,
+  .content-form select:focus,
+  .content-form textarea:focus {
+    border-color: #1c3d5a;
+    outline: 2px solid rgba(28, 61, 90, .15);
+    outline-offset: 1px;
+  }
+  .content-form label { font-weight: 500; }
+  .content-form ul { list-style: none; padding-left: 0; }
+</style>
 </head>
-
-<body style="font-family: Arial, sans-serif; margin: 0; color: #222222; background-color: #f7f7f7;">
-    <header
-        style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1c3d5a;">
-        <a href="{% url 'home' %}" style="color: #ffffff; font-weight: bold; font-size: 1.3rem; text-decoration: none;">Oxford News</a>
-<nav>
-    <a href="{% url 'newsletter-list' %}" style="color: #ffffff; margin-right: 1rem; text-decoration: none;">Newsletters</a>
-    <span style="color: #ffffff; margin-right: 1.5rem;">
-    Hi, {{ user.username }} ({{ user.get_role_display }})
-    </span>
-
-    {% if user.is_authenticated %}
-        <details style="display: inline-block; position: relative;">
-            <summary style="color: #ffffff; cursor: pointer;">Menu</summary>
-            <div style="position: absolute; right: 0; background-color: #ffffff; border: 1px solid #cccccc; border-radius: 4px; padding: 0.5rem; min-width: 170px;">
-                <a href="{% url 'following' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Following</a>
-                <a href="{% url 'discover' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Discover</a>
-                {% if user.role == 'JOURNALIST' %}
-                    <a href="{% url 'my-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">My Articles</a>
-                    <a href="{% url 'my-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">My Newsletters</a>
-                {% endif %}
-                {% if user.role == 'EDITOR' %}
-                    <a href="{% url 'publisher-list' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Publishers</a>
-                    <a href="{% url 'pending-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Pending Articles</a>
-                    <a href="{% url 'manage-articles' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Articles</a>
-                    <a href="{% url 'manage-newsletters' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Manage Newsletters</a>
-                {% endif %}
-                <a href="{% url 'account' %}" style="display:block; color: #1c3d5a; padding: 0.25rem 0; text-decoration: none;">Account</a>
-                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; color: #1c3d5a; padding: 0.25rem 0; cursor: pointer; text-align: left; width: 100%;">Log out</button>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1c3d5a;">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">Oxford News</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'newsletter-list' %}">Newsletters</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'following' %}">Following</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'discover' %}">Discover</a></li>
+          {% if user.role == 'JOURNALIST' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'my-articles' %}">My Articles</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'my-newsletters' %}">My Newsletters</a></li>
+          {% endif %}
+          {% if user.role == 'EDITOR' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'publisher-list' %}">Manage Publishers</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'pending-articles' %}">Pending Articles</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'manage-articles' %}">Manage Articles</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'manage-newsletters' %}">Manage Newsletters</a></li>
+          {% endif %}
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item text-light small me-lg-3">
+            Hi, {{ user.username }} ({{ user.get_role_display }})
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Menu
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'account' %}">Account</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'logout' %}" class="px-3">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link p-0 text-decoration-none">Log out</button>
                 </form>
-            </div>
-        </details>
-    {% else %}
-        <a href="{% url 'login' %}" style="color: #ffffff; margin-right: 1rem; text-decoration: none;">Log in</a>
-        <a href="{% url 'signup' %}" style="background-color: #ffffff; color: #1c3d5a; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none;">Sign up</a>
-    {% endif %}
+              </li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+          <li class="nav-item"><a class="btn btn-light btn-sm ms-lg-2" href="{% url 'signup' %}">Sign up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
 </nav>
-    </header>
-    <main style="padding: 2rem;">
-        {% block content %}{% endblock %}
-    </main>
+<main class="container py-4">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

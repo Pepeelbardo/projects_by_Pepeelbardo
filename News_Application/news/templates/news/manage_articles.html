@@ -1,25 +1,29 @@
 {% extends 'news/base.html' %}
 {% block title %}Manage Articles{% endblock %}
 {% block content %}
-<h1 style="color: #1c3d5a;">Manage Articles</h1>
+<h1 class="h4 mb-3" style="color: #1c3d5a;">Manage Articles</h1>
 
-<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for article in articles %}
-        <div style="border: 1px solid #cccccc; border-radius: 6px; padding: 1rem; width: 220px; background-color: #ffffff;">
-            <h3 style="margin: 0 0 0.5rem 0; color: #1c3d5a;">
-                <a href="{% url 'article-page' article.id %}" style="color: #1c3d5a; text-decoration: none;">{{ article.title }}</a>
-            </h3>
-            <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #666666;">By {{ article.author.username }}</p>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="h6 card-title">
+                        <a href="{% url 'article-page' article.id %}" class="text-decoration-none" style="color: #1c3d5a;">{{ article.title }}</a>
+                    </h3>
+                    <p class="card-text small text-muted mb-2">By {{ article.author.username }}</p>
 
-            {% if article.approved %}
-                <span style="background-color: #2e7d32; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Approved</span>
-            {% else %}
-                <span style="background-color: #999999; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Pending</span>
-            {% endif %}
+                    {% if article.approved %}
+                        <span class="badge text-bg-success align-self-start mb-2">Approved</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary align-self-start mb-2">Pending</span>
+                    {% endif %}
 
-            <div style="margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                <a href="{% url 'article-edit' article.id %}" style="background-color: #ffffff; color: #1c3d5a; border: 1px solid #1c3d5a; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Edit</a>
-                <a href="{% url 'article-delete' article.id %}" style="background-color: #ffffff; color: #b00020; border: 1px solid #b00020; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Delete</a>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{% url 'article-edit' article.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'article-delete' article.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
             </div>
         </div>
     {% empty %}
