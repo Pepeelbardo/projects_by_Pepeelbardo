@@ -1,11 +1,17 @@
 {% extends 'news/base.html' %}
 {% block title %}Delete Article{% endblock %}
 {% block content %}
-<h1 style="color: #1c3d5a;">Delete "{{ object.title }}"?</h1>
-<p>This action cannot be undone.</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" style="background-color: #b00020; color: #ffffff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px;">Delete</button>
-    <a href="{% url 'manage-articles' %}" style="margin-left: 1rem;">Cancel</a>
-</form>
+<div class="col-md-6 mx-auto">
+  <div class="card border-danger-subtle">
+    <div class="card-body">
+      <h1 class="h4 mb-3" style="color: #1c3d5a;">Delete "{{ object.title }}"?</h1>
+      <p class="text-muted">This action cannot be undone.</p>
+      <form method="post" class="d-flex align-items-center gap-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <a href="{% url 'manage-articles' %}" class="btn btn-outline-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

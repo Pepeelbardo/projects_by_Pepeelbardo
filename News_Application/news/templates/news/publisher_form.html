@@ -1,12 +1,18 @@
 {% extends 'news/base.html' %}
 {% block title %}{% if object %}Edit Publisher{% else %}New Publisher{% endif %}{% endblock %}
 {% block content %}
-<h1 style="color: #1c3d5a;">{% if object %}Edit Publisher{% else %}New Publisher{% endif %}</h1>
-<form method="post" style="max-width: 500px;">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" style="background-color: #1c3d5a; color: #ffffff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px;">
-        {% if object %}Save Changes{% else %}Create Publisher{% endif %}
-    </button>
-</form>
+<div class="col-lg-6 mx-auto">
+  <div class="card">
+    <div class="card-body">
+      <h1 class="h4 mb-3" style="color: #1c3d5a;">{% if object %}Edit Publisher{% else %}New Publisher{% endif %}</h1>
+      <form method="post" class="content-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary">
+              {% if object %}Save Changes{% else %}Create Publisher{% endif %}
+          </button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
