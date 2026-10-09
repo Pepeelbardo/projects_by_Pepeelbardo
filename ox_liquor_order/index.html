@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#141110">
+<title>The Ox · Liquor Order</title>
+<style>
+  :root{
+    --bg:#141110; --card:#1f1a17; --card2:#2a231f; --line:#3a302a;
+    --text:#f3ece4; --muted:#a8998a; --accent:#e0a33a; --accent-ink:#1a1206;
+    --ok:#7cc47f; --warn:#e6865a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
+  button{font:inherit;cursor:pointer}
+
+  header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px}
+  .top{max-width:640px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  h1{font-size:1.15rem;margin:0;letter-spacing:.01em}
+  h1 b{color:var(--accent)}
+  .lang{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:6px 12px;font-weight:600}
+  .status{max-width:640px;margin:10px auto 0}
+  .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+  .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+  .meta{font-size:.85rem;color:var(--muted);margin-top:6px}
+
+  main{max-width:640px;margin:0 auto;padding:16px 16px 130px}
+  label.field{display:block;font-size:.8rem;color:var(--muted);margin:0 0 6px}
+  input[type=text],input[type=search]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:1rem}
+  .row2{display:grid;grid-template-columns:1fr;gap:12px}
+
+  .cat h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:24px 0 8px}
+  .item{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+  .item.counted{border-left:4px solid var(--ok)}
+  .item.low{border-left:4px solid var(--warn)}
+  .name{font-weight:600}
+  .par{font-size:.8rem;color:var(--muted);margin-top:2px}
+  .item.low .par{color:var(--warn);font-weight:700}
+  .item.counted .par{color:var(--ok)}
+  .rule{font-size:.85rem;color:var(--muted);margin:14px 0 0}
+  .tag{display:inline-block;margin-top:5px;font-size:.72rem;padding:2px 8px;border-radius:999px;background:#3b2f17;color:var(--accent);font-weight:700}
+  .addrow{display:grid;grid-template-columns:1fr 64px auto;gap:8px;margin-top:4px}
+  .addrow input{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:1rem;width:100%}
+  .addrow button,.rm{border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-weight:700;padding:0 14px}
+  .rm{width:44px;height:44px;font-size:1.2rem;padding:0}
+  .exqty{font-weight:700;font-size:1.1rem;margin-right:10px}
+  .stepper{display:flex;align-items:center;gap:6px;flex-shrink:0}
+  .stepper button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:1.4rem;line-height:1}
+  .stepper input{width:58px;height:44px;text-align:center;font-size:1.15rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+  .stepper input::placeholder{color:#5c5048}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .bar .inner{max-width:640px;margin:0 auto;display:flex;gap:8px}
+  .btn{flex:1;padding:14px;border-radius:12px;border:1px solid transparent;font-weight:700;font-size:1rem}
+  .primary{background:var(--accent);color:var(--accent-ink)}
+  .ghost{background:none;border-color:var(--line);color:var(--text)}
+
+  #orderView{display:none}
+  .sheet{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .sheet h2{margin:0 0 4px;font-size:1.3rem}
+  .sheet .sub{color:var(--muted);font-size:.9rem;margin-bottom:14px}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:9px 4px;border-bottom:1px solid var(--line);text-align:left}
+  th{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  td.q,th.q{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+  tr.catrow td{color:var(--accent);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;padding-top:16px;font-weight:700}
+  .total td{border-bottom:none;font-weight:700}
+  .note{margin-top:14px;padding:12px;border-radius:10px;background:#3a2419;color:#f3c9b3;font-size:.9rem}
+  .empty{padding:20px 0;text-align:center;color:var(--ok);font-weight:600}
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+
+  @media print{
+    body{background:#fff;color:#000}
+    header,.bar,#countView,.toast{display:none!important}
+    #orderView{display:block!important}
+    main{padding:0}
+    .sheet{border:none;background:#fff;padding:0}
+    td,th{border-color:#bbb;color:#000}
+    tr.catrow td,.sheet .sub,th{color:#444}
+    .note{background:#f1f1f1;color:#000}
+    .tag{background:none;color:#000;border:1px solid #000}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <h1>The Ox · <b data-t="title">Liquor Order</b></h1>
+    <button class="lang" id="langBtn">ES</button>
+  </div>
+  <div class="status" id="statusBox">
+    <div class="progress"><i id="progBar"></i></div>
+    <div class="meta" id="progText"></div>
+  </div>
+</header>
+
+<main>
+  <!-- ===== COUNT VIEW ===== -->
+  <section id="countView">
+    <div class="row2">
+      <div>
+        <label class="field" for="who" data-t="who">Counted by</label>
+        <input type="text" id="who" autocomplete="name">
+      </div>
+      <div>
+        <input type="search" id="search" data-tp="search" placeholder="Search…">
+      </div>
+    </div>
+    <p class="rule" id="ruleText"></p>
+    <div id="list"></div>
+
+    <!-- Items not on the list -->
+    <div class="cat">
+      <h2 data-t="otherCat">Other (not on the list)</h2>
+      <div id="extraList"></div>
+      <div class="addrow">
+        <input type="text" id="exName" data-tp="exName" placeholder="Liquor name">
+        <input type="number" id="exQty" inputmode="numeric" min="1" value="1" aria-label="Qty">
+        <button id="exAdd" data-t="add">Add</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ORDER VIEW ===== -->
+  <section id="orderView">
+    <div class="sheet" id="sheet"></div>
+  </section>
+</main>
+
+<div class="bar">
+  <div class="inner" id="barCount">
+    <button class="btn ghost" id="resetBtn" data-t="reset">Reset</button>
+    <button class="btn primary" id="makeBtn" data-t="make">Make order</button>
+  </div>
+  <div class="inner" id="barOrder" style="display:none">
+    <button class="btn ghost" id="backBtn" data-t="back">Back</button>
+    <button class="btn ghost" id="shareBtn" data-t="share">Share</button>
+    <button class="btn primary" id="copyBtn" data-t="copy">Copy</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ORDER RULE — applies to every item.
+   If the count is REORDER_AT or less, order enough to reach STOCK_TARGET.
+   Example: 2 bottles counted → order 5 − 2 = 3.
+   One item can use its own rule: { cat:"…", name:"…", reorderAt: 6, target: 12 }
+
+   Extra options per item:
+   caseHint: true → shows "Consider ordering a case" (high-use items)
+   byCase:   true → when low, the order says "1 case" instead of bottles
+   ========================================================= */
+const REORDER_AT   = 3;
+const STOCK_TARGET = 5;
+
+/* =========================================================
+   CATALOG — edit this list to match the bar.
+   cat  = category (groups the list, in this order)
+   name = item as staff call it
+   ========================================================= */
+const CATALOG = [
+  // Vodka
+  { cat: "Vodka", name: "Well Vodka" },
+  { cat: "Vodka", name: "Absolut" },
+  { cat: "Vodka", name: "Tito's", caseHint: true },
+  { cat: "Vodka", name: "Grey Goose" },
+  { cat: "Vodka", name: "UV Blue" },
+  { cat: "Vodka", name: "UV Cake" },
+  { cat: "Vodka", name: "UV Cherry" },
+  { cat: "Vodka", name: "UV Pink Lemonade" },
+  { cat: "Vodka", name: "The Original Pickle Shot" },
+
+  // Rum
+  { cat: "Rum", name: "Bacardi" },
+  { cat: "Rum", name: "Sailor Jerry" },
+  { cat: "Rum", name: "Captain Morgan", caseHint: true },
+  { cat: "Rum", name: "Captain Morgan Private Stock" },
+  { cat: "Rum", name: "Malibu" },
+  { cat: "Rum", name: "Malibu Pineapple" },
+
+  // Gin
+  { cat: "Gin", name: "Well Gin" },
+  { cat: "Gin", name: "Tanqueray" },
+  { cat: "Gin", name: "Bombay Sapphire" },
+
+  // Tequila & Mezcal
+  { cat: "Tequila & Mezcal", name: "Próspero" },
+  { cat: "Tequila & Mezcal", name: "Corralejo" },
+  { cat: "Tequila & Mezcal", name: "Camarena" },
+  { cat: "Tequila & Mezcal", name: "1800 Reposado" },
+  { cat: "Tequila & Mezcal", name: "Jose Cuervo Especial" },
+  { cat: "Tequila & Mezcal", name: "Don Julio Blanco" },
+  { cat: "Tequila & Mezcal", name: "Don Julio Reposado" },
+  { cat: "Tequila & Mezcal", name: "Patrón Silver" },
+  { cat: "Tequila & Mezcal", name: "Monte Albán Mezcal" },
+
+  // Whiskey
+  { cat: "Whiskey", name: "Seagram's Seven Crown" },
+  { cat: "Whiskey", name: "Black Velvet" },
+  { cat: "Whiskey", name: "Black Velvet Apple" },
+  { cat: "Whiskey", name: "Black Velvet Toasted Caramel" },
+  { cat: "Whiskey", name: "Canadian Club" },
+  { cat: "Whiskey", name: "Crown Royal" },
+  { cat: "Whiskey", name: "Crown Royal Apple" },
+  { cat: "Whiskey", name: "Crown Royal Blackberry" },
+  { cat: "Whiskey", name: "Crown Royal Peach" },
+  { cat: "Whiskey", name: "Jack Daniel's" },
+  { cat: "Whiskey", name: "Jim Beam" },
+  { cat: "Whiskey", name: "Jim Beam Apple" },
+  { cat: "Whiskey", name: "Jim Beam Peach" },
+  { cat: "Whiskey", name: "Wild Turkey" },
+  { cat: "Whiskey", name: "Handy & Schiller Old Fashioned" },
+  { cat: "Whiskey", name: "Templeton Rye" },
+  { cat: "Whiskey", name: "Cedar Ridge" },
+  { cat: "Whiskey", name: "Jameson" },
+  { cat: "Whiskey", name: "Johnnie Walker Red Label" },
+  { cat: "Whiskey", name: "Buchanan's Deluxe" },
+  { cat: "Whiskey", name: "Ole Smoky Salty Caramel" },
+  { cat: "Whiskey", name: "Fireball" },
+
+  // Liqueurs & Schnapps
+  { cat: "Liqueurs & Schnapps", name: "Triple Sec" },
+  { cat: "Liqueurs & Schnapps", name: "Blue Curaçao" },
+  { cat: "Liqueurs & Schnapps", name: "Amaretto" },
+  { cat: "Liqueurs & Schnapps", name: "Kahlúa" },
+  { cat: "Liqueurs & Schnapps", name: "Licor 43" },
+  { cat: "Liqueurs & Schnapps", name: "Jägermeister" },
+  { cat: "Liqueurs & Schnapps", name: "Rumple Minze" },
+  { cat: "Liqueurs & Schnapps", name: "Dr. McGillicuddy's" },
+  { cat: "Liqueurs & Schnapps", name: "Peach Pucker" },
+  { cat: "Liqueurs & Schnapps", name: "Watermelon Pucker" },
+  { cat: "Liqueurs & Schnapps", name: "Sour Apple Schnapps" },
+  { cat: "Liqueurs & Schnapps", name: "Black Cherry Schnapps" },
+  { cat: "Liqueurs & Schnapps", name: "Peppermint Schnapps" },
+  { cat: "Liqueurs & Schnapps", name: "Butterscotch Schnapps" },
+
+  // Mixers
+  { cat: "Mixers", name: "Red Bull", byCase: true },
+  { cat: "Mixers", name: "Finest Call Strawberry" },
+  { cat: "Mixers", name: "Finest Call Mango" },
+  { cat: "Mixers", name: "Finest Call Peach" },
+  { cat: "Mixers", name: "Finest Call Raspberry" },
+  { cat: "Mixers", name: "Fever-Tree Tonic Water 5 oz", byCase: true },
+];
+
+const reorderAt = it => it.reorderAt ?? REORDER_AT;
+const targetOf  = it => it.target ?? STOCK_TARGET;
+const needOf    = (it, count) => {
+  if (count > reorderAt(it)) return 0;
+  return it.byCase ? 1 : Math.max(0, targetOf(it) - count);
+};
+
+/* ---------- Text in both languages ---------- */
+const TEXT = {
+  en: { title:"Liquor Order", who:"Counted by", search:"Search…", reset:"Reset", make:"Make order",
+        back:"Back", share:"Share", copy:"Copy", counted:"counted",
+        rule:(a,b)=>`Order when there are ${a} or fewer — fills up to ${b}.`, order:"Order",
+        ok:"OK", notYet:"Not counted",
+        of:"of", orderTitle:"Liquor order", by:"Counted by", item:"Item", qty:"Qty",
+        total:"Total", nothing:"Nothing to order — everything is stocked.",
+        notCounted:"Not counted (not included in the order):", confirmReset:"Clear all counts?",
+        copied:"Order copied", unknown:"—",
+        caseHint:"Consider ordering a case", byCase:"Ordered by case", case:"case", cases:"cases",
+        bottles:"bottles", otherCat:"Other (not on the list)", otherShort:"Other",
+        exName:"Liquor name", add:"Add", remove:"Remove" },
+  es: { title:"Pedido de licor", who:"Contó", search:"Buscar…", reset:"Borrar", make:"Hacer pedido",
+        back:"Volver", share:"Compartir", copy:"Copiar", counted:"contados",
+        rule:(a,b)=>`Se pide cuando hay ${a} o menos — se completa a ${b}.`, order:"Pedir",
+        ok:"OK", notYet:"Sin contar",
+        of:"de", orderTitle:"Pedido de licor", by:"Contó", item:"Producto", qty:"Cant.",
+        total:"Total", nothing:"No hay nada que pedir: todo está surtido.",
+        notCounted:"Sin contar (no se incluyen en el pedido):", confirmReset:"¿Borrar todo el conteo?",
+        copied:"Pedido copiado", unknown:"—",
+        caseHint:"Considera ordenar una caja", byCase:"Se pide por caja", case:"caja", cases:"cajas",
+        bottles:"botellas", otherCat:"Otros (fuera de la lista)", otherShort:"Otros",
+        exName:"Nombre del licor", add:"Agregar", remove:"Quitar" }
+};
+
+/* ---------- Saved state (survives closing the page on this phone) ---------- */
+const KEY = "ox-liquor-count-v1";
+let state = { counts:{}, extras:[], who:"", lang:"en" };
+try { Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch(e) {}
+if (!Array.isArray(state.extras)) state.extras = [];
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+
+const $ = id => document.getElementById(id);
+const t = k => TEXT[state.lang][k];
+const isCounted = name => typeof state.counts[name] === "number";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Count view ---------- */
+function renderList(){
+  const q = $("search").value.trim().toLowerCase();
+  const groups = {};
+  CATALOG.forEach((it, i) => {
+    if (q && !(it.name + " " + it.cat).toLowerCase().includes(q)) return;
+    (groups[it.cat] ||= []).push({ ...it, i });
+  });
+  $("list").innerHTML = Object.entries(groups).map(([cat, items]) => `
+    <div class="cat"><h2>${esc(cat)}</h2>
+      ${items.map(it => {
+        const c = state.counts[it.name];
+        const need = isCounted(it.name) ? needOf(it, c) : 0;
+        const cls = !isCounted(it.name) ? "" : (need > 0 ? "low" : "counted");
+        const sub = !isCounted(it.name) ? t("notYet") : (need > 0 ? `${t("order")} ${qtyText(it, need)}` : t("ok"));
+        const tag = it.caseHint ? `<span class="tag">${t("caseHint")}</span>`
+                  : it.byCase   ? `<span class="tag">${t("byCase")}</span>` : "";
+        return `<div class="item ${cls}" data-i="${it.i}">
+          <div><div class="name">${esc(it.name)}</div><div class="par">${sub}</div>${tag}</div>
+          <div class="stepper">
+            <button data-act="dec" aria-label="−1">−</button>
+            <input type="number" inputmode="numeric" min="0" placeholder="–" value="${isCounted(it.name) ? c : ""}" aria-label="${esc(it.name)}">
+            <button data-act="inc" aria-label="+1">+</button>
+          </div></div>`;
+      }).join("")}
+    </div>`).join("");
+  renderProgress();
+}
+
+function qtyText(it, n){
+  return it.byCase ? `${n} ${n === 1 ? t("case") : t("cases")}` : String(n);
+}
+
+/* ---------- Items not on the list ---------- */
+function renderExtras(){
+  $("extraList").innerHTML = state.extras.map((x, k) => `
+    <div class="item counted" data-k="${k}">
+      <div class="name">${esc(x.name)}</div>
+      <div class="stepper"><span class="exqty">${x.qty}</span>
+        <button class="rm" data-rm="${k}" aria-label="${t("remove")}">×</button></div>
+    </div>`).join("");
+}
+$("exAdd").onclick = () => {
+  const name = $("exName").value.trim();
+  const qty = Math.max(1, Math.floor(Number($("exQty").value) || 1));
+  if (!name) { $("exName").focus(); return; }
+  state.extras.push({ name, qty }); save();
+  $("exName").value = ""; $("exQty").value = 1;
+  renderExtras();
+};
+$("exName").addEventListener("keydown", e => { if (e.key === "Enter") $("exAdd").click(); });
+$("extraList").addEventListener("click", e => {
+  const b = e.target.closest("[data-rm]"); if (!b) return;
+  state.extras.splice(+b.dataset.rm, 1); save(); renderExtras();
+});
+
+function renderProgress(){
+  const done = CATALOG.filter(it => isCounted(it.name)).length;
+  $("progBar").style.width = (done / CATALOG.length * 100) + "%";
+  $("progText").textContent = `${done} ${t("of")} ${CATALOG.length} ${t("counted")}`;
+}
+
+function setCount(i, value){
+  const it = CATALOG[i];
+  if (value === "" || value === null || isNaN(value)) delete state.counts[it.name];
+  else state.counts[it.name] = Math.max(0, Math.floor(value));
+  save();
+}
+
+$("list").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-act]"); if (!btn) return;
+  const i = +btn.closest(".item").dataset.i, name = CATALOG[i].name;
+  const cur = isCounted(name) ? state.counts[name] : null;
+  if (btn.dataset.act === "inc") setCount(i, cur === null ? 1 : cur + 1);
+  else setCount(i, cur === null ? 0 : cur - 1);
+  renderList();
+});
+$("list").addEventListener("change", e => {
+  if (e.target.tagName !== "INPUT") return;
+  const i = +e.target.closest(".item").dataset.i;
+  setCount(i, e.target.value === "" ? "" : Number(e.target.value));
+  renderList();
+});
+$("search").addEventListener("input", renderList);
+$("who").addEventListener("input", e => { state.who = e.target.value; save(); });
+
+/* ---------- Order ---------- */
+function buildOrder(){
+  const lines = [], missing = [];
+  CATALOG.forEach(it => {
+    if (!isCounted(it.name)) { missing.push(it.name); return; }
+    const need = needOf(it, state.counts[it.name]);
+    if (need > 0) lines.push({ ...it, need });
+  });
+  state.extras.forEach(x => lines.push({ cat: t("otherShort"), name: x.name, need: x.qty }));
+  return { lines, missing };
+}
+
+function today(){
+  return new Date().toLocaleDateString(state.lang === "es" ? "es-MX" : "en-US",
+    { weekday:"short", year:"numeric", month:"short", day:"numeric" });
+}
+
+function renderOrder(){
+  const { lines, missing } = buildOrder();
+  let rows = "", lastCat = "";
+  lines.forEach(l => {
+    if (l.cat !== lastCat) { rows += `<tr class="catrow"><td colspan="2">${esc(l.cat)}</td></tr>`; lastCat = l.cat; }
+    const hint = l.caseHint ? `<br><span class="tag">${t("caseHint")}</span>` : "";
+    rows += `<tr><td>${esc(l.name)}${hint}</td><td class="q">${qtyText(l, l.need)}</td></tr>`;
+  });
+  const total = totalText(lines);
+  $("sheet").innerHTML = `
+    <h2>The Ox Bar and Grill — ${t("orderTitle")}</h2>
+    <div class="sub">${today()} · ${t("by")}: ${esc(state.who || t("unknown"))}</div>
+    ${lines.length
+      ? `<table><thead><tr><th>${t("item")}</th><th class="q">${t("qty")}</th></tr></thead>
+         <tbody>${rows}<tr class="total"><td>${t("total")}</td><td class="q">${total}</td></tr></tbody></table>`
+      : `<div class="empty">${t("nothing")}</div>`}
+    ${missing.length ? `<div class="note"><b>${t("notCounted")}</b><br>${missing.map(esc).join(", ")}</div>` : ""}`;
+}
+
+function totalText(lines){
+  const bottles = lines.filter(l => !l.byCase).reduce((a, l) => a + l.need, 0);
+  const cases   = lines.filter(l =>  l.byCase).reduce((a, l) => a + l.need, 0);
+  const parts = [];
+  if (bottles) parts.push(`${bottles} ${t("bottles")}`);
+  if (cases)   parts.push(`${cases} ${cases === 1 ? t("case") : t("cases")}`);
+  return parts.join(" + ");
+}
+
+/* Text that gets copied or shared: only what is being ordered. */
+function orderText(){
+  const { lines } = buildOrder();
+  let s = `The Ox Bar and Grill — ${t("orderTitle")}\n${today()} · ${t("by")}: ${state.who || t("unknown")}\n\n`;
+  s += lines.length
+    ? lines.map(l => `${l.name}: ${qtyText(l, l.need)}${l.caseHint ? ` (${t("caseHint")})` : ""}`).join("\n")
+      + `\n\n${t("total")}: ${totalText(lines)}`
+    : t("nothing");
+  return s;
+}
+
+function showOrder(on){
+  $("countView").style.display = on ? "none" : "";
+  $("orderView").style.display = on ? "block" : "none";
+  $("statusBox").style.display = on ? "none" : "";
+  $("barCount").style.display = on ? "none" : "flex";
+  $("barOrder").style.display = on ? "flex" : "none";
+  if (on) renderOrder();
+  window.scrollTo(0, 0);
+}
+
+function toast(msg){
+  const el = $("toast"); el.textContent = msg; el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+$("makeBtn").onclick = () => showOrder(true);
+$("backBtn").onclick = () => showOrder(false);
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch(e) {
+    // Fallback for browsers without clipboard access
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch(_) {}
+    ta.remove(); return ok;
+  }
+}
+$("copyBtn").onclick = async () => { if (await copyText(orderText())) toast(t("copied")); };
+$("shareBtn").onclick = async () => {
+  const text = orderText();
+  try {
+    if (navigator.share) { await navigator.share({ title: t("orderTitle"), text }); return; }
+  } catch(e) { return; }
+  if (await copyText(text)) toast(t("copied"));
+};
+$("resetBtn").onclick = () => {
+  if (!confirm(t("confirmReset"))) return;
+  state.counts = {}; state.extras = []; save(); renderList(); renderExtras();
+};
+
+/* ---------- Language ---------- */
+function applyLang(){
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
+  document.querySelectorAll("[data-tp]").forEach(el => el.placeholder = t(el.dataset.tp));
+  $("langBtn").textContent = state.lang === "en" ? "ES" : "EN";
+  $("ruleText").textContent = t("rule")(REORDER_AT, STOCK_TARGET);
+  renderList();
+  renderExtras();
+  if ($("orderView").style.display === "block") renderOrder();
+}
+$("langBtn").onclick = () => { state.lang = state.lang === "en" ? "es" : "en"; save(); applyLang(); };
+
+$("who").value = state.who;
+applyLang();
+</script>
+</body>
+</html>
