@@ -4,7 +4,7 @@ A mobile-first web app that turns a nightly bottle count into a ready-to-send li
 
 Staff count the bottles on the shelf and the app works out what to order, applying the bar's rules. The order is one tap away from the supplier through WhatsApp, text or email.
 
-**Live app:** https://pepeelbardo.github.io/ox-liquor-order/
+**Live app:** https://pepeelbardo.github.io/projects_by_Pepeelbardo/ox_liquor_order/
 
 ---
 
